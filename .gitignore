@@ -1,3 +1,6 @@
+# NE PAS IGNORER
+!.env.example
+
 # compiled output
 /dist
 /node_modules
@@ -48,6 +51,7 @@ Thumbs.db
 .env.local
 *.env
 
+
 # temp directory
 .temp
 .tmp
@@ -80,3 +84,18 @@ docker-compose.override.yml
 
 # Build artifacts
 *.tsbuildinfo
+
+# NestJS
+.nest
+
+# Yarn
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+.pnp.*
+
+# PNPM
+.pnpm-debug.log
