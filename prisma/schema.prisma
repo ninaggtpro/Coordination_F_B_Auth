@@ -1,0 +1,28 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Account {
+  uid       String   @id @default(uuid())
+  login     String   @unique
+  password  String?
+  roles     Role[]   @default([ROLE_USER])
+  // from      String?
+  status    Status   @default(open)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Role {
+  ROLE_USER
+  ROLE_ADMIN
+}
+
+enum Status {
+  open
+  closed
+}
