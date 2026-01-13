@@ -11,4 +11,11 @@ export class CreateAccountDto {
 
   @ApiProperty({ enum: ['open', 'closed'], default: 'open' })
   status?: string;
+
+  @ApiProperty({ required: false })
+  createdAt?: Date;
+
+  @ApiProperty({ required: false })
+  updatedAt?: Date; 
+
 }
