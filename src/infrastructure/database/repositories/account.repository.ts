@@ -12,9 +12,9 @@ export class AccountRepository implements IAccountRepository {
       data: { 
         uid: account.uid,
         login: account.login,
-        roles: account.roles.getValues(),
+        roles: account.roles,
         password: account.password,
-        status: account.status.getValue(),
+        status: account.status,
         createdAt: account.createdAt,
         updatedAt: account.updatedAt,
       } 

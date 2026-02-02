@@ -1,22 +1,50 @@
-import { RolesValueObject } from '../value_objects/role.value-object';
-import { StatusValueObject } from '../value_objects/status.value-object';
+export type AccountStatus = 'open' | 'closed';
+export type AccountRole = 'ROLE_ADMIN' | 'ROLE_USER';
 
 export class AccountEntity {
   constructor(
     public readonly uid: string,
     public readonly login: string,
     private readonly _password: string | null,
-    private readonly _roles: RolesValueObject,
-    private readonly _status: StatusValueObject,
+    private readonly _roles: AccountRole[],
+    private readonly _status: AccountStatus,
     public readonly createdAt: Date,
     public readonly updatedAt: Date,
-  ) {}
+  ) {
+    AccountEntity.validateStatus(_status);
+    AccountEntity.validateRoles(_roles);
+  }
 
-  get roles(): RolesValueObject {
+  private static validateStatus(status: string): void {
+    if(status !== 'open' && status !== 'closed') {
+      throw new Error(`Invalid status value: ${status}`);
+    }
+  }
+
+  private static validateRoles(roles: AccountRole[]): void {
+    roles.forEach(role => {
+      if(role !== 'ROLE_ADMIN' && role !== 'ROLE_USER') {
+        throw new Error(`Invalid role value: ${role}`);
+      }
+    });
+  }
+
+  private static applyRoleLogic(roles: AccountRole[]): AccountRole[] {
+    if(!roles || roles.length === 0) {
+      return ['ROLE_USER'];
+    }
+    
+    if(roles.includes('ROLE_ADMIN')) {
+      return ['ROLE_ADMIN', 'ROLE_USER'];
+    }
+    return [...new Set(roles)];
+  }
+
+  get roles(): AccountRole[] {
     return this._roles;
   }
 
-  get status(): StatusValueObject {
+  get status(): AccountStatus {
     return this._status;
   }
 
@@ -24,14 +52,29 @@ export class AccountEntity {
     return this._password;
   }
 
+  changeRoles(newRoles: AccountRole[]): AccountEntity {
+    AccountEntity.validateRoles(newRoles);
+    const finalRoles = AccountEntity.applyRoleLogic(newRoles);
+
+    return new AccountEntity(
+      this.uid,
+      this.login,
+      this._password,
+      finalRoles,
+      this._status,
+      this.createdAt,
+      new Date(),
+    );
+  }
+
   
   static fromPrisma(data: any): AccountEntity {
     return new AccountEntity(
-      data.uid || data.id, // On gère les deux noms possibles
+      data.uid,
       data.login,
       data.password,
-      new RolesValueObject(data.roles),
-      new StatusValueObject(data.status),
+      data.roles,
+      data.status,
       new Date(data.createdAt),
       new Date(data.updatedAt),
     );
@@ -40,17 +83,20 @@ export class AccountEntity {
   static create(props: {
     login: string;
     password?: string;
-    roles: string[];
-    status?: string;
+    roles: AccountRole[];
+    status?: AccountStatus;
   }): AccountEntity {
+    const finalRoles = AccountEntity.applyRoleLogic(props.roles);
+    
     return new AccountEntity(
       require('crypto').randomUUID(),
       props.login,
       props.password || null,
-      new RolesValueObject(props.roles),
-      new StatusValueObject(props.status || 'open'),
+      finalRoles,
+      props.status || 'open',
       new Date(),
       new Date(),
     );
   }
 }
+
