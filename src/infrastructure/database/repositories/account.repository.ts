@@ -15,6 +15,7 @@ export class AccountRepository implements IAccountRepository {
         roles: account.roles,
         password: account.password,
         status: account.status,
+        provider: account.provider ?? 'local',
         createdAt: account.createdAt,
         updatedAt: account.updatedAt,
       } 
@@ -26,5 +27,13 @@ export class AccountRepository implements IAccountRepository {
   async findAll(): Promise<AccountEntity[]> {
     const accounts = await this.prisma.account.findMany();
     return accounts.map(acc => AccountEntity.fromPrisma(acc));
+  }
+
+  async findByLogin(login: string): Promise<AccountEntity | null> {
+    const account = await this.prisma.account.findUnique({
+      where: { login }
+    });
+    
+    return account ? AccountEntity.fromPrisma(account) : null;
   }
 }

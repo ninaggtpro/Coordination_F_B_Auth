@@ -1,5 +1,8 @@
+import { randomUUID } from 'crypto';
+
 export type AccountStatus = 'open' | 'closed';
 export type AccountRole = 'ROLE_ADMIN' | 'ROLE_USER';
+export type AccountProvider = 'local' | 'github' | 'google';
 
 export class AccountEntity {
   constructor(
@@ -10,26 +13,21 @@ export class AccountEntity {
     private readonly _status: AccountStatus,
     public readonly createdAt: Date,
     public readonly updatedAt: Date,
+    public readonly provider?: AccountProvider,
   ) {
-    AccountEntity.validateStatus(_status);
-    AccountEntity.validateRoles(_roles);
+    AccountEntity.validatePassword(_password, provider);
   }
 
-  private static validateStatus(status: string): void {
-    if(status !== 'open' && status !== 'closed') {
-      throw new Error(`Invalid status value: ${status}`);
+  private static validatePassword(password: string | null, provider?: AccountProvider): void {
+    const authProvider = provider ?? 'local';
+    if (authProvider === 'local') {
+      if (!password || password.trim() === '') {
+        throw new Error('Password is required for local authentication');
+      }
     }
   }
 
-  private static validateRoles(roles: AccountRole[]): void {
-    roles.forEach(role => {
-      if(role !== 'ROLE_ADMIN' && role !== 'ROLE_USER') {
-        throw new Error(`Invalid role value: ${role}`);
-      }
-    });
-  }
-
-  private static applyRoleLogic(roles: AccountRole[]): AccountRole[] {
+  private static applyRoleLogic(roles?: AccountRole[]): AccountRole[] {
     if(!roles || roles.length === 0) {
       return ['ROLE_USER'];
     }
@@ -38,6 +36,14 @@ export class AccountEntity {
       return ['ROLE_ADMIN', 'ROLE_USER'];
     }
     return [...new Set(roles)];
+  }
+
+  private static applyStatusLogic(status?: AccountStatus): AccountStatus {
+    return status ?? 'open';
+  }
+
+  private static applyProviderLogic(provider?: AccountProvider): AccountProvider {
+    return provider ?? 'local';
   }
 
   get roles(): AccountRole[] {
@@ -53,7 +59,6 @@ export class AccountEntity {
   }
 
   changeRoles(newRoles: AccountRole[]): AccountEntity {
-    AccountEntity.validateRoles(newRoles);
     const finalRoles = AccountEntity.applyRoleLogic(newRoles);
 
     return new AccountEntity(
@@ -64,6 +69,7 @@ export class AccountEntity {
       this._status,
       this.createdAt,
       new Date(),
+      this.provider,
     );
   }
 
@@ -77,25 +83,30 @@ export class AccountEntity {
       data.status,
       new Date(data.createdAt),
       new Date(data.updatedAt),
+      data.provider,
     );
   }
 
   static create(props: {
     login: string;
-    password?: string;
-    roles: AccountRole[];
+    password?: string | null;
+    roles?: AccountRole[];
     status?: AccountStatus;
+    provider?: AccountProvider;
   }): AccountEntity {
     const finalRoles = AccountEntity.applyRoleLogic(props.roles);
+    const finalStatus = AccountEntity.applyStatusLogic(props.status);
+    const finalProvider = AccountEntity.applyProviderLogic(props.provider);
     
     return new AccountEntity(
-      require('crypto').randomUUID(),
+      randomUUID(),
       props.login,
-      props.password || null,
+      props.password ?? null,
       finalRoles,
-      props.status || 'open',
+      finalStatus,
       new Date(),
       new Date(),
+      finalProvider,
     );
   }
 }

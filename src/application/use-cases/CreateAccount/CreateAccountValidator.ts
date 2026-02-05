@@ -1,21 +1,27 @@
-import { CreateAccountDto } from "./CreateAccountDTO";
+import { BadRequestException } from "@nestjs/common";
+import { CreateAccountDTO } from "./CreateAccountDTO";
 
 export class CreateAccountValidator {
-    validate(dto: CreateAccountDto): void {
+    validate(dto: CreateAccountDTO): void {
         if (!dto.login || dto.login.trim() === '') {
-            throw new Error('Login is required.');
+            throw new BadRequestException('Login is required.');
         }
-        if (dto.roles.length === 0) {
-            throw new Error('At least one role must be specified.');
+
+        const provider = dto.provider ?? 'local';
+        
+        // Pour l'inscription locale, le password est obligatoire
+        if (provider === 'local') {
+            if (!dto.password || dto.password.trim() === '') {
+                throw new BadRequestException('Password is required for local registration.');
+            }
+            if (dto.password.length < 6) {
+                throw new BadRequestException('Password must be at least 6 characters long.');
+            }
+            if (dto.password.length > 42) {
+                throw new BadRequestException('Password must be at most 42 characters long.');
+            }
         }
-        if (dto.status && dto.status !== 'open' && dto.status !== 'closed') {
-            throw new Error('Invalid status value.');
-        }
-        if (dto.password && dto.password.length < 6) {
-            throw new Error('Password must be at least 6 characters long.');
-        }
-        if (dto.password && dto.password.length > 42) {
-            throw new Error('Password must be at most 42 characters long.');
-        }
+        
+        // Pour OAuth (github, google), le password n'est pas nécessaire
     }
 }
