@@ -1,28 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Post, Body } from '@nestjs/common';
 import { CreateAccountRequest } from '../dto/create-account.request';
-import { UpdateAccountRequest } from '../dto/update-account.request';
 import { AccountResponse } from '../dto/account.response';
 import { CreateAccountUseCase } from '../../../application/use-cases/CreateAccount/CreateAccountUseCase';
-import { CreateAccountDto } from '../../../application/use-cases/CreateAccount/CreateAccountDTO';
-import { AccountRole, AccountStatus } from '../../../domain/entities/account.entity';
 
-@Controller('accounts')
+@Controller('account')
 export class AccountsController {
   constructor(
     private readonly createAccountUseCase: CreateAccountUseCase,
-  ) {}
+  ) { }
 
   @Post()
-  async create(@Body() createAccountRequest: CreateAccountRequest): Promise<AccountResponse> {
-    const createAccountDto: CreateAccountDto = {
-      email: createAccountRequest.email,
-      password: createAccountRequest.password,
-      firstName: createAccountRequest.firstName,
-      lastName: createAccountRequest.lastName,
-      roles: createAccountRequest.roles,
-      status: createAccountRequest.status,
-    };
-    const account = await this.createAccountUseCase.execute(createAccountDto);
+  async create(@Body() request: CreateAccountRequest): Promise<AccountResponse> {
+    const account = await this.createAccountUseCase.execute(request);
     return new AccountResponse(account);
   }
 

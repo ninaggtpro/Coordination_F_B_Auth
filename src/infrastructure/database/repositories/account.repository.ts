@@ -4,7 +4,7 @@ import { AccountEntity } from '../../../domain/entities/account.entity';
 import { IAccountRepository } from '../../../domain/repositories/IAccountRepositoy';
 
 @Injectable()
-export class AccountRepository implements IAccountRepository {
+export class PrismaAccountRepository implements IAccountRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(account: AccountEntity): Promise<AccountEntity> {

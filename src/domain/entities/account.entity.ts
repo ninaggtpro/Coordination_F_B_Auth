@@ -1,8 +1,15 @@
 import { randomUUID } from 'crypto';
 import { Account } from '@prisma/client';
 
-export type AccountStatus = 'open' | 'closed';
-export type AccountRole = 'ROLE_ADMIN' | 'ROLE_USER';
+export enum AccountStatus {
+  OPEN = 'open',
+  CLOSED = 'closed',
+}
+
+export enum AccountRole {
+  ADMIN = 'ROLE_ADMIN',
+  USER = 'ROLE_USER',
+}
 
 export class AccountEntity {
   constructor(
@@ -22,7 +29,7 @@ export class AccountEntity {
   }
 
   private validateStatus(status: AccountStatus): void {
-    if(status !== 'open' && status !== 'closed') {
+    if (!Object.values(AccountStatus).includes(status)) {
       throw new Error(`Invalid status value: ${status}`);
     }
   }
@@ -31,9 +38,10 @@ export class AccountEntity {
     if (!roles || roles.length === 0) {
       throw new Error('At least one role is required');
     }
-    
-    roles.forEach(role => {
-      if(role !== 'ROLE_ADMIN' && role !== 'ROLE_USER') {
+
+    const validRoles = Object.values(AccountRole);
+    roles.forEach((role) => {
+      if (!validRoles.includes(role)) {
         throw new Error(`Invalid role value: ${role}`);
       }
     });
@@ -46,18 +54,18 @@ export class AccountEntity {
   }
 
   private static applyRoleLogic(roles?: AccountRole[]): AccountRole[] {
-    if(!roles || roles.length === 0) {
-      return ['ROLE_USER'];
+    if (!roles || roles.length === 0) {
+      return [AccountRole.USER];
     }
-    
-    if(roles.includes('ROLE_ADMIN')) {
-      return ['ROLE_ADMIN', 'ROLE_USER'];
+
+    if (roles.includes(AccountRole.ADMIN)) {
+      return [AccountRole.ADMIN, AccountRole.USER];
     }
     return [...new Set(roles)];
   }
 
   private static applyStatusLogic(status?: AccountStatus): AccountStatus {
-    return status ?? 'open';
+    return status ?? AccountStatus.OPEN;
   }
 
   get roles(): AccountRole[] {
@@ -101,7 +109,6 @@ export class AccountEntity {
     );
   }
 
-  
   static fromPrisma(data: Account): AccountEntity {
     return new AccountEntity(
       data.uid,
@@ -109,8 +116,8 @@ export class AccountEntity {
       data.password,
       data.firstName,
       data.lastName,
-      data.roles,
-      data.status,
+      data.roles as AccountRole[],
+      data.status as AccountStatus,
       new Date(data.createdAt),
       new Date(data.updatedAt),
     );
@@ -126,7 +133,7 @@ export class AccountEntity {
   }): AccountEntity {
     const finalRoles = AccountEntity.applyRoleLogic(props.roles);
     const finalStatus = AccountEntity.applyStatusLogic(props.status);
-    
+
     return new AccountEntity(
       randomUUID(),
       props.email,

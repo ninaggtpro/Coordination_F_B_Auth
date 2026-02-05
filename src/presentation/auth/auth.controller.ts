@@ -1,22 +1,34 @@
-import { Body, Controller, Post } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { Body, Controller, Post, HttpCode } from '@nestjs/common'; // Ajout de HttpCode
+import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { LoginAccountUseCase } from '../../application/use-cases/LoginAccount/LoginAccountUseCase';
-import { LoginRequest } from './dtos/login.request';
+import { LoginRequest } from './dto/login.request';
+import { LoginResponse } from './dto/login.response';
 
 @ApiTags('auth')
-@Controller('auth')
+@Controller('token')
 export class AuthController {
     constructor(private readonly loginAccountUseCase: LoginAccountUseCase) {}
 
-    @Post('login')
-    @ApiOperation({ summary: 'Login with email and password' })
-    @ApiResponse({ status: 200, description: 'Returns JWT access token' })
-    @ApiResponse({ status: 401, description: 'Invalid credentials' })
-    async login(@Body() loginRequest: LoginRequest) {
-        const loginAccountDto = {
-            email: loginRequest.email,
+    @Post()
+    @HttpCode(201) // ✅ Ton contrat spécifie 201 pour la création des tokens
+    @ApiOperation({ summary: 'Création d’un token de connexion' })
+    @ApiBody({ type: LoginRequest })
+    @ApiResponse({ 
+        status: 201, 
+        description: 'Création avec succès des tokens', 
+        type: LoginResponse 
+    })
+    @ApiResponse({ 
+        status: 404, 
+        description: 'Identifiants non trouvé (paire login / mot de passe inconnue)' 
+    })
+    async login(@Body() loginRequest: LoginRequest): Promise<LoginResponse> {
+        const result = await this.loginAccountUseCase.execute({
+            email: loginRequest.login,
             password: loginRequest.password,
-        };
-        return this.loginAccountUseCase.execute(loginAccountDto);
+            from: loginRequest.from,
+        });
+
+        return new LoginResponse(result);
     }
 }

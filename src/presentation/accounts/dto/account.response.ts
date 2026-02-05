@@ -2,38 +2,57 @@ import { ApiProperty } from '@nestjs/swagger';
 import { AccountEntity, AccountRole, AccountStatus } from '../../../domain/entities/account.entity';
 
 export class AccountResponse {
-  @ApiProperty({ example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiProperty({
+    example: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+    description: 'Identifiant unique du compte (UUID)'
+  })
   uid: string;
 
-  @ApiProperty({ example: 'john.doe@example.com' })
-  email: string;
+  @ApiProperty({
+    example: 'user@example.com',
+    description: 'Identifiant de connexion (mappé depuis l\'email interne)'
+  })
+  login: string;
 
-  @ApiProperty({ example: 'John' })
-  firstName: string;
-
-  @ApiProperty({ example: 'Doe' })
-  lastName: string;
-
-  @ApiProperty({ example: ['ROLE_USER'] })
+  @ApiProperty({
+    type: [String],
+    enum: AccountRole,
+    isArray: true,
+    example: [AccountRole.USER],
+    description: 'Liste des rôles attribués au compte'
+  })
   roles: AccountRole[];
 
-  @ApiProperty({ example: 'open' })
+  @ApiProperty({
+    type: String,
+    enum: AccountStatus,
+    example: AccountStatus.OPEN,
+    description: 'Statut actuel du compte (open ou closed)'
+  })
   status: AccountStatus;
 
-  @ApiProperty({ example: '2024-01-15T10:30:00Z' })
+  @ApiProperty({
+    type: String,
+    format: 'date-time',
+    example: '2024-05-02T14:09:00Z'
+  })
   createdAt: Date;
 
-  @ApiProperty({ example: '2024-01-15T10:30:00Z' })
+  @ApiProperty({
+    type: String,
+    format: 'date-time',
+    example: '2024-05-02T14:09:00Z'
+  })
   updatedAt: Date;
 
   constructor(account: AccountEntity) {
-    this.uid = account.uid;
-    this.email = account.email;
-    this.firstName = account.firstName;
-    this.lastName = account.lastName;
-    this.roles = account.roles;
-    this.status = account.status;
-    this.createdAt = account.createdAt;
-    this.updatedAt = account.updatedAt;
+    if (account) {
+      this.uid = account.uid;
+      this.login = account.email;
+      this.roles = account.roles;
+      this.status = account.status;
+      this.createdAt = account.createdAt;
+      this.updatedAt = account.updatedAt;
+    }
   }
 }

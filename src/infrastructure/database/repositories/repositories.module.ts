@@ -1,15 +1,16 @@
 import { Module } from '@nestjs/common';
 import { PrismaModule } from '../prisma/prisma.module';
-import { AccountRepository } from './account.repository';
+import { PrismaAccountRepository } from './account.repository';
+import { IAccountRepository } from 'src/domain/repositories/IAccountRepositoy';
 
 @Module({
   imports: [PrismaModule],
   providers: [
     {
-      provide: 'IAccountRepository',
-      useClass: AccountRepository,
+      provide: IAccountRepository,
+      useClass: PrismaAccountRepository,
     },
   ],
-  exports: ['IAccountRepository'],
+  exports: [IAccountRepository],
 })
 export class RepositoriesModule {}
