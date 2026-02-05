@@ -1,5 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { ApiProperty, ApiHideProperty } from '@nestjs/swagger';
+import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class LoginRequest {
   @ApiProperty({ 
@@ -20,9 +20,10 @@ export class LoginRequest {
 
   @ApiProperty({ 
     example: 'web', 
-    description: 'Provenance de la requête (ex: web, mobile, ios)' 
+    description: 'Provenance de la requête (ex: web, mobile)',
+    required: false
   })
   @IsString()
-  @IsNotEmpty()
-  from: string;
+  @IsOptional()
+  from?: string;
 }

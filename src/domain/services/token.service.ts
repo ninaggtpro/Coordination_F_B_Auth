@@ -13,10 +13,26 @@ export class TokenService {
       roles: account.roles,
     };
     
-    return this.jwtService.sign(payload);
+    return this.jwtService.sign(payload, { 
+      expiresIn: '60m' 
+    });
   }
 
-  verifyToken(token: string): any {
-    return this.jwtService.verify(token);
+  generateRefreshToken(account: AccountEntity): string {
+  const payload = {
+    sub: account.uid,
+    type: 'refresh',
+  };
+  
+  return this.jwtService.sign(payload, { 
+    expiresIn: '120m', 
+    secret: process.env.JWT_REFRESH_SECRET, 
+  });
+}
+
+  verifyToken(token: string, isRefresh = false): any {
+    return this.jwtService.verify(token, {
+      secret: isRefresh ? process.env.JWT_REFRESH_SECRET : undefined
+    });
   }
 }

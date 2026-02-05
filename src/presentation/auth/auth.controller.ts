@@ -1,5 +1,5 @@
-import { Body, Controller, Post, HttpCode } from '@nestjs/common'; // Ajout de HttpCode
-import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
+import { Body, Controller, Post, HttpCode, Headers, Ip } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger'; // Ajout de ApiExcludeParam
 import { LoginAccountUseCase } from '../../application/use-cases/LoginAccount/LoginAccountUseCase';
 import { LoginRequest } from './dto/login.request';
 import { LoginResponse } from './dto/login.response';
@@ -10,7 +10,7 @@ export class AuthController {
     constructor(private readonly loginAccountUseCase: LoginAccountUseCase) {}
 
     @Post()
-    @HttpCode(201) // ✅ Ton contrat spécifie 201 pour la création des tokens
+    @HttpCode(201)
     @ApiOperation({ summary: 'Création d’un token de connexion' })
     @ApiBody({ type: LoginRequest })
     @ApiResponse({ 
@@ -22,11 +22,21 @@ export class AuthController {
         status: 404, 
         description: 'Identifiants non trouvé (paire login / mot de passe inconnue)' 
     })
-    async login(@Body() loginRequest: LoginRequest): Promise<LoginResponse> {
+    async login(
+        @Body() loginRequest: LoginRequest,
+
+        @Headers('user-agent') userAgent: any,      
+        @Ip() ip: string
+
+    ): Promise<LoginResponse> {
+
+        const fromValue = userAgent || 'unknown';
+
         const result = await this.loginAccountUseCase.execute({
             email: loginRequest.login,
             password: loginRequest.password,
-            from: loginRequest.from,
+            from: fromValue,
+            ip: ip,
         });
 
         return new LoginResponse(result);

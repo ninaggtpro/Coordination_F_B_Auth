@@ -36,23 +36,22 @@ export class AccountResponse {
     format: 'date-time',
     example: '2024-05-02T14:09:00Z'
   })
-  createdAt: Date;
+  createdAt: string;
 
   @ApiProperty({
     type: String,
     format: 'date-time',
     example: '2024-05-02T14:09:00Z'
   })
-  updatedAt: Date;
+  updatedAt: string;
 
   constructor(account: AccountEntity) {
-    if (account) {
-      this.uid = account.uid;
-      this.login = account.email;
-      this.roles = account.roles;
-      this.status = account.status;
-      this.createdAt = account.createdAt;
-      this.updatedAt = account.updatedAt;
-    }
+  if (account) {
+    this.uid = account.uid;
+    this.login = account.email;
+    this.roles = account.roles; 
+    this.createdAt = account.createdAt.toISOString();
+    this.updatedAt = account.updatedAt.toISOString();
   }
+}
 }

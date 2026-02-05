@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { IAccountRepository } from '../../../domain/repositories/IAccountRepositoy';
 import { AuthService } from '../../../domain/services/auth.service';
 import { TokenService } from '../../../domain/services/token.service';
@@ -14,7 +14,12 @@ export class LoginAccountUseCase {
         private readonly validator: LoginAccountValidator,
     ) {}
 
-    async execute(dto: LoginAccountDto): Promise<{ accessToken: string }> {
+    async execute(dto: LoginAccountDto): Promise<{ 
+        accessToken: string; 
+        accessTokenExpiresAt: string; 
+        refreshToken: string; 
+        refreshTokenExpiresAt: string; 
+    }> {
         const account = await this.accountRepository.findByEmail(dto.email);
         
         this.validator.validateAccountExists(account);
@@ -26,11 +31,22 @@ export class LoginAccountUseCase {
         );
         
         if (!isPasswordValid) {
-            throw new UnauthorizedException('Invalid credentials');
+            throw new NotFoundException('Identifiants non trouvé (paire login / mot de passe inconnue)');
         }
 
-        const accessToken = this.tokenService.generateAccessToken(account!);
+        const now = new Date();
+        const accessExpiresAt = new Date(now.getTime() + 60 * 60 * 1000);
+        const refreshExpiresAt = new Date(now.getTime() + 120 * 60 * 1000);
 
-        return { accessToken };
+        const accessToken = this.tokenService.generateAccessToken(account!);
+        const refreshToken = this.tokenService.generateRefreshToken(account!);
+
+
+        return {
+            accessToken,
+            accessTokenExpiresAt: accessExpiresAt.toISOString(),
+            refreshToken,
+            refreshTokenExpiresAt: refreshExpiresAt.toISOString(),
+        };
     }
 }

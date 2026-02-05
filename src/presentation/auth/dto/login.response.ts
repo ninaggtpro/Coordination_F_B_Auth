@@ -5,13 +5,13 @@ export class LoginResponse {
   accessToken: string;
 
   @ApiProperty({ example: '2026-02-05T17:20:00Z' })
-  accessTokenExpiresAt: Date;
+  accessTokenExpiresAt: string;
 
   @ApiProperty({ example: 'ey...' })
   refreshToken: string;
 
   @ApiProperty({ example: '2026-02-05T18:20:00Z' })
-  refreshTokenExpiresAt: Date;
+  refreshTokenExpiresAt: string;
 
   constructor(partial: Partial<LoginResponse>) {
     Object.assign(this, partial);
