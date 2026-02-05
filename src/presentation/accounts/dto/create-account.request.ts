@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsNotEmpty, MinLength, MaxLength, IsOptional, IsEnum, IsArray, IsEmail } from 'class-validator';
+import { AccountRole, AccountStatus } from '../../../domain/entities/account.entity';
 
 export class CreateAccountRequest {
   @ApiProperty({ description: 'User email (used as login)', example: 'john.doe@example.com' })
@@ -25,24 +26,24 @@ export class CreateAccountRequest {
   lastName: string;
 
   @ApiProperty({ 
-    enum: ['ROLE_USER', 'ROLE_ADMIN'], 
+    enum: AccountRole, 
     isArray: true, 
-    default: ['ROLE_USER'],
+    default: [AccountRole.ROLE_USER],
     required: false,
-    example: ['ROLE_USER']
+    example: [AccountRole.ROLE_USER]
   })
   @IsOptional()
   @IsArray()
-  @IsEnum(['ROLE_USER', 'ROLE_ADMIN'], { each: true })
-  roles?: string[];
+  @IsEnum(AccountRole, { each: true })
+  roles?: AccountRole[];
 
   @ApiProperty({ 
-    enum: ['open', 'closed'], 
-    default: 'open',
+    enum: AccountStatus, 
+    default: AccountStatus.OPEN,
     required: false,
-    example: 'open'
+    example: AccountStatus.OPEN
   })
   @IsOptional()
-  @IsEnum(['open', 'closed'])
-  status?: string;
+  @IsEnum(AccountStatus)
+  status?: AccountStatus;
 }
