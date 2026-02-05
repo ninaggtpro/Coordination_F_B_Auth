@@ -5,18 +5,18 @@ import { IAccountRepository } from '../../../domain/repositories/IAccountReposit
 
 @Injectable()
 export class AccountRepository implements IAccountRepository {
-  constructor(private prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async create(account: AccountEntity): Promise<AccountEntity> {
     const created = await this.prisma.account.create({ 
       data: { 
         uid: account.uid,
-        login: account.login,
-        roles: account.roles,
+        email: account.email,
         password: account.password,
+        firstName: account.firstName,
+        lastName: account.lastName,
+        roles: account.roles,
         status: account.status,
-        createdAt: account.createdAt,
-        updatedAt: account.updatedAt,
       } 
     });
 
@@ -26,5 +26,13 @@ export class AccountRepository implements IAccountRepository {
   async findAll(): Promise<AccountEntity[]> {
     const accounts = await this.prisma.account.findMany();
     return accounts.map(acc => AccountEntity.fromPrisma(acc));
+  }
+
+  async findByEmail(email: string): Promise<AccountEntity | null> {
+    const account = await this.prisma.account.findUnique({
+      where: { email }
+    });
+    
+    return account ? AccountEntity.fromPrisma(account) : null;
   }
 }
