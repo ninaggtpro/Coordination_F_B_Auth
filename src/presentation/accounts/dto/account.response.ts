@@ -23,12 +23,6 @@ export class AccountResponse {
   })
   roles: AccountRole[];
 
-  @ApiProperty({
-    type: String,
-    enum: AccountStatus,
-    example: AccountStatus.OPEN,
-    description: 'Statut actuel du compte (open ou closed)'
-  })
   status: AccountStatus;
 
   @ApiProperty({
@@ -49,7 +43,8 @@ export class AccountResponse {
   if (account) {
     this.uid = account.uid;
     this.login = account.email;
-    this.roles = account.roles; 
+    this.roles = account.roles;
+    this.status = account.status;
     this.createdAt = account.createdAt.toISOString();
     this.updatedAt = account.updatedAt.toISOString();
   }
