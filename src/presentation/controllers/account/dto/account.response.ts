@@ -23,6 +23,11 @@ export class AccountResponse {
   })
   roles: AccountRole[];
 
+  @ApiProperty({
+    enum: AccountStatus,
+    example: AccountStatus.OPEN,
+    description: 'Statut du compte (open ou closed)'
+  })
   status: AccountStatus;
 
   @ApiProperty({

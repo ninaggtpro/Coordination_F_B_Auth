@@ -8,16 +8,20 @@ import { TokenService } from 'src/domain/services/token.service';
 import { LoginAccountValidator } from 'src/application/use-cases/LoginAccount/LoginAccountValidator';
 import { JwtService } from '@nestjs/jwt';
 import { CreateAccountValidator } from 'src/application/use-cases/CreateAccount/CreateAccountValidator';
+import { RefreshTokenController } from '../refreshToken/RefreshToken.controller';
+import { ValidTokenController } from '../validToken/ValidToken.controller';
+import { RefreshAccountUseCase } from 'src/application/use-cases/RefreshAccount/RefreshAccountUseCase';
 
 @Module({
   imports: [PrismaModule, RepositoriesModule],
-  controllers: [AuthController],
+  controllers: [AuthController, RefreshTokenController, ValidTokenController],
   providers: [
     LoginAccountUseCase,
     LoginAccountValidator,
     TokenService,
     AuthService,
     JwtService,
+    RefreshAccountUseCase,
     // {
     //   provide: IAccountRepository,
     //   useClass: PrismaAccountRepository, 

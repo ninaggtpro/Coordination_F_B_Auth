@@ -1,6 +1,6 @@
 import { Controller, Post, Body, HttpCode, UseGuards, Get, Param, NotFoundException } from '@nestjs/common';
 import { CreateAccountUseCase } from '../../../application/use-cases/CreateAccount/CreateAccountUseCase';
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags, ApiParam } from '@nestjs/swagger';
 import { CreateAccountRequest } from './dto/create-account.request';
 import { AccountResponse } from './dto/account.response';
 
@@ -63,8 +63,27 @@ export class AccountsController {
     return new AccountResponse(account);
   }
 
-@Get("/:id")
+  @Get("/:id")
   @HttpCode(200)
+  @ApiOperation({
+    summary: "Récupération d'un compte par son ID",
+    description: "Retourne les informations détaillées d'un compte utilisateur."
+  })
+  @ApiParam({
+    name: 'id',
+    description: "Identifiant unique du compte (UUID)",
+    required: true,
+    type: String
+  })
+  @ApiResponse({
+    status: 200,
+    description: "Compte trouvé",
+    type: AccountResponse
+  })
+  @ApiResponse({
+    status: 404,
+    description: "Compte non trouvé"
+  })
   async getAccountById(@Param('id') id: string): Promise<AccountResponse> {
     const response = await this.createAccountUseCase.getAccountById(id);
     if(!response) {
@@ -73,8 +92,21 @@ export class AccountsController {
     return new AccountResponse(response);
 }
 
-@Get("/all")
+  @Get("/all")
   @HttpCode(200)
+  @ApiOperation({
+    summary: "Récupération de tous les comptes",
+    description: "Retourne la liste de tous les comptes enregistrés."
+  })
+  @ApiResponse({
+    status: 200,
+    description: "Liste des comptes récupérée avec succès",
+    type: [AccountResponse]
+  })
+  @ApiResponse({
+    status: 404,
+    description: "Aucun compte trouvé"
+  })
   async getAllAccounts(): Promise<AccountResponse[]> {
     const accounts = await this.createAccountUseCase.findAll();
     if(!accounts || accounts.length === 0) {
