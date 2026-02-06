@@ -19,6 +19,7 @@ export class TokenService {
   }
 
   generateRefreshToken(account: AccountEntity): string {
+  
   const payload = {
     sub: account.uid,
     type: 'refresh',

@@ -7,25 +7,25 @@ import { LoginResponse } from './dto/login.response';
 @ApiTags('auth')
 @Controller('token')
 export class AuthController {
-    constructor(private readonly loginAccountUseCase: LoginAccountUseCase) {}
+    constructor(private readonly loginAccountUseCase: LoginAccountUseCase) { }
 
     @Post()
     @HttpCode(201)
     @ApiOperation({ summary: 'Création d’un token de connexion' })
     @ApiBody({ type: LoginRequest })
-    @ApiResponse({ 
-        status: 201, 
-        description: 'Création avec succès des tokens', 
-        type: LoginResponse 
+    @ApiResponse({
+        status: 201,
+        description: 'Création avec succès des tokens',
+        type: LoginResponse
     })
-    @ApiResponse({ 
-        status: 404, 
-        description: 'Identifiants non trouvé (paire login / mot de passe inconnue)' 
+    @ApiResponse({
+        status: 404,
+        description: 'Identifiants non trouvé (paire login / mot de passe inconnue)',
     })
     async login(
         @Body() loginRequest: LoginRequest,
 
-        @Headers('user-agent') userAgent: any,      
+        @Headers('user-agent') userAgent: any,
         @Ip() ip: string
 
     ): Promise<LoginResponse> {

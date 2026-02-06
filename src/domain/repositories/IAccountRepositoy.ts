@@ -5,4 +5,5 @@ export abstract class IAccountRepository {
     abstract create(account: AccountEntity): Promise<AccountEntity>;
     abstract findAll(): Promise<AccountEntity[]>;
     abstract findByEmail(email: string): Promise<AccountEntity | null>;
+    abstract findByUid(uid: string): Promise<AccountEntity | null>;
 }

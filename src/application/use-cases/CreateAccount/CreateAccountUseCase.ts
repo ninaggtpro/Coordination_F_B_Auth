@@ -3,11 +3,9 @@ import { IAccountRepository } from '../../../domain/repositories/IAccountReposit
 import { AccountEntity } from '../../../domain/entities/account.entity';
 import { AuthService } from '../../../domain/services/auth.service';
 import { CreateAccountDto } from './CreateAccountDTO';
-import { CreateAccountValidator } from './CreateAccountValidator';
 
 @Injectable()
 export class CreateAccountUseCase {
-    private readonly validator = new CreateAccountValidator();
 
     constructor(
         private readonly accountRepository: IAccountRepository,
@@ -15,7 +13,6 @@ export class CreateAccountUseCase {
     ) { }
 
     async execute(dto: CreateAccountDto): Promise<AccountEntity> {
-        this.validator.validate(dto);
 
         const existingAccount = await this.accountRepository.findByEmail(dto.login);
         if (existingAccount) {
