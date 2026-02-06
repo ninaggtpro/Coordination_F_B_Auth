@@ -3,8 +3,6 @@ import { CreateAccountRequest } from '../dto/create-account.request';
 import { AccountResponse } from '../dto/account.response';
 import { CreateAccountUseCase } from '../../../application/use-cases/CreateAccount/CreateAccountUseCase';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/infrastructure/auth/guards/JwtAuthGuard';
-import { RolesGuard } from 'src/infrastructure/auth/guards/RolesGuard';
 
 @ApiTags('Account')
 @Controller('account')
@@ -14,7 +12,6 @@ export class AccountsController {
   ) { }
 
   @Post()
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @HttpCode(201)
   @ApiOperation({ 
     summary: "Création d'un compte utilisateur",

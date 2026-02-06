@@ -3,8 +3,6 @@ import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger'; /
 import { LoginAccountUseCase } from '../../application/use-cases/LoginAccount/LoginAccountUseCase';
 import { LoginRequest } from './dto/login.request';
 import { LoginResponse } from './dto/login.response';
-import { JwtAuthGuard } from 'src/infrastructure/auth/guards/JwtAuthGuard';
-import { RolesGuard } from 'src/infrastructure/auth/guards/RolesGuard';
 
 @ApiTags('Access token')
 @Controller('token')
@@ -12,7 +10,6 @@ export class AuthController {
     constructor(private readonly loginAccountUseCase: LoginAccountUseCase) { }
 
     @Post()
-    @UseGuards(JwtAuthGuard, RolesGuard)
     @HttpCode(201)
     @ApiOperation({ 
         summary: 'Création d’un token de connexion',
