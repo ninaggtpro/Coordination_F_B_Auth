@@ -1,9 +1,11 @@
-import { Body, Controller, HttpCode, Param, Post } from "@nestjs/common";
+import { Body, Controller, HttpCode, Param, Post, UseGuards } from "@nestjs/common";
 import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { CreateAccountRequest } from "../dto/create-account.request";
 import { RefreshAccountUseCase } from "src/application/use-cases/RefreshAccount/RefreshAccountUseCase";
 import { RefreshTokenResponse } from "../dto/refreshToken.reponse";
 import { request } from "https";
+import { JwtAuthGuard } from "src/infrastructure/auth/guards/JwtAuthGuard";
+import { RolesGuard } from "src/infrastructure/auth/guards/RolesGuard";
 
 @ApiTags('refresh-token')
 @Controller('refresh-token')
@@ -13,6 +15,7 @@ export class RefreshTokenController {
     ) { }
 
     @Post(':refreshToken/token')
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @HttpCode(201)
     @ApiOperation({ 
         summary: "Création d'un access token à partir d'un refresh token.",
