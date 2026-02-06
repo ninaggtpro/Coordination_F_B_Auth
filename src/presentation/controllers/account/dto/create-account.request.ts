@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsEnum, IsNotEmpty, IsString, MinLength, IsArray, IsOptional } from 'class-validator';
-import { AccountRole, AccountStatus } from '../../../domain/entities/account.entity';
+import { AccountRole, AccountStatus } from 'src/domain/entities/account.entity';
 
 export class CreateAccountRequest {
   @ApiProperty({ 
@@ -34,7 +34,7 @@ export class CreateAccountRequest {
   @ApiProperty({ 
     enum: AccountStatus, 
     example: 'string',
-    required: false, // Marqué comme optionnel car "open" par défaut selon ta doc
+    required: false,
     description: 'Statut : open ou closed'
   })
   @IsEnum(AccountStatus)

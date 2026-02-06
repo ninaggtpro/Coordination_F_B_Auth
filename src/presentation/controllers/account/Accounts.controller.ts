@@ -1,8 +1,8 @@
-import { Controller, Post, Body, HttpCode, UseGuards } from '@nestjs/common';
-import { CreateAccountRequest } from '../dto/create-account.request';
-import { AccountResponse } from '../dto/account.response';
+import { Controller, Post, Body, HttpCode, UseGuards, Get, Param, NotFoundException } from '@nestjs/common';
 import { CreateAccountUseCase } from '../../../application/use-cases/CreateAccount/CreateAccountUseCase';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { CreateAccountRequest } from './dto/create-account.request';
+import { AccountResponse } from './dto/account.response';
 
 @ApiTags('Account')
 @Controller('account')
@@ -51,8 +51,36 @@ export class AccountsController {
     description: "Paramètre de connexion invalide: admin token manquant et / ou incorrect",
   })
   async create(@Body() request: CreateAccountRequest): Promise<AccountResponse> {
-    const account = await this.createAccountUseCase.execute(request);
+    const account = await this.createAccountUseCase.execute({
+      email: request.login,
+      password: request.password,
+      roles: request.roles,
+      status: request.status,
+    });
+    if(!account) {
+      throw new NotFoundException(`Erreur lors de la création du compte`);
+    }
     return new AccountResponse(account);
   }
+
+@Get("/:id")
+  @HttpCode(200)
+  async getAccountById(@Param('id') id: string): Promise<AccountResponse> {
+    const response = await this.createAccountUseCase.getAccountById(id);
+    if(!response) {
+      throw new NotFoundException(`Compte avec l'id ${id} non trouvé`);
+    }
+    return new AccountResponse(response);
 }
 
+@Get("/all")
+  @HttpCode(200)
+  async getAllAccounts(): Promise<AccountResponse[]> {
+    const accounts = await this.createAccountUseCase.findAll();
+    if(!accounts || accounts.length === 0) {
+      throw new NotFoundException(`Aucun compte trouvé`);
+    }
+    return accounts.map(account => new AccountResponse(account));
+  }
+
+}

@@ -13,7 +13,10 @@ export class LoginResponse {
   @ApiProperty({ example: '2026-02-05T18:20:00Z' })
   refreshTokenExpiresAt: Date;
 
-  constructor(partial: Partial<LoginResponse>) {
-    Object.assign(this, partial);
+  constructor(tokens :LoginResponse) {
+    this.accessToken = tokens.accessToken;
+    this.accessTokenExpiresAt = tokens.accessTokenExpiresAt;
+    this.refreshToken = tokens.refreshToken;
+    this.refreshTokenExpiresAt = tokens.refreshTokenExpiresAt;
   }
 }

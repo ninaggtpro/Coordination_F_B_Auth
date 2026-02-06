@@ -2,8 +2,8 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { AccountsModule } from './presentation/accounts/accounts.module';
-import { AuthModule } from './infrastructure/auth/auth.module';
+import { AccountsModule } from './presentation/controllers/account/accounts.module';
+import { AuthModule } from './presentation/controllers/auth/auth.module';
 
 @Module({
   imports: [

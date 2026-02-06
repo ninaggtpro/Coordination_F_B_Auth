@@ -1,8 +1,17 @@
 import { BadRequestException } from '@nestjs/common';
-import { CreateAccountDto } from "./CreateAccountDTO";
+import { CreateAccountDto } from './CreateAccountDTO';
 
 export class CreateAccountValidator {
-    validate(dto: CreateAccountDto): void {
-        // Aucune validation spécifique pour le moment
+
+  private readonly EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  validateisEmail(email : string):void{
+    if (!email) {
+      throw new BadRequestException('Email is required');
     }
+
+      if (!this.EMAIL_REGEX.test(email)) {
+      throw new BadRequestException('Invalid email format');
+    }
+  }
 }

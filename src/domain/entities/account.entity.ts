@@ -23,34 +23,14 @@ export class AccountEntity {
     public readonly createdAt: Date,
     public readonly updatedAt: Date,
   ) {
-    this.validateStatus(_status);
-    this.validateRoles(_roles);
-    this.validatePassword(_password);
   }
 
-  private validateStatus(status: AccountStatus): void {
-    if (!Object.values(AccountStatus).includes(status)) {
-      throw new Error(`Invalid status value: ${status}`);
+  private static validateEmail(email: string): string {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email || !emailRegex.test(email)) {
+      throw new Error('Invalid email format');
     }
-  }
-
-  private validateRoles(roles: AccountRole[]): void {
-    if (!roles || roles.length === 0) {
-      throw new Error('At least one role is required');
-    }
-
-    const validRoles = Object.values(AccountRole);
-    roles.forEach((role) => {
-      if (!validRoles.includes(role)) {
-        throw new Error(`Invalid role value: ${role}`);
-      }
-    });
-  }
-
-  private validatePassword(password: string): void {
-    if (!password || password.trim() === '') {
-      throw new Error('Password cannot be empty');
-    }
+    return email;
   }
 
   private static applyRoleLogic(roles?: AccountRole[]): AccountRole[] {
@@ -61,12 +41,29 @@ export class AccountEntity {
     if (roles.includes(AccountRole.ADMIN)) {
       return [AccountRole.ADMIN, AccountRole.USER];
     }
-    return [...new Set(roles)];
+    return [AccountRole.USER];
   }
 
-  private static applyStatusLogic(status?: AccountStatus): AccountStatus {
-    return status ?? AccountStatus.OPEN;
+  private static validateStatus(status: AccountStatus | undefined): AccountStatus {
+    if(status === null || status === undefined) {
+      return AccountStatus.OPEN;
+    }
+    if (!Object.values(AccountStatus).includes(status) ) {
+      return AccountStatus.OPEN;
+    } 
+    return status;
   }
+
+  private static validatePassword(password: string): string {
+    if (!password || password.trim() === '') {
+      throw new Error('Password cannot be empty');
+    }
+    return password;
+  }
+
+  
+
+  
 
   get roles(): AccountRole[] {
     return this._roles;
@@ -93,7 +90,6 @@ export class AccountEntity {
   }
 
   changeRoles(newRoles: AccountRole[]): AccountEntity {
-    this.validateRoles(newRoles);
     const finalRoles = AccountEntity.applyRoleLogic(newRoles);
 
     return new AccountEntity(
@@ -131,17 +127,14 @@ export class AccountEntity {
     roles?: AccountRole[];
     status?: AccountStatus;
   }): AccountEntity {
-    const finalRoles = AccountEntity.applyRoleLogic(props.roles);
-    const finalStatus = AccountEntity.applyStatusLogic(props.status);
-
     return new AccountEntity(
       randomUUID(),
-      props.email,
-      props.password,
+      this.validateEmail(props.email),
+      this.validatePassword(props.password),
       props.firstName,
       props.lastName,
-      finalRoles,
-      finalStatus,
+      this.applyRoleLogic(props.roles),
+      this.validateStatus(props.status),
       new Date(),
       new Date(),
     );

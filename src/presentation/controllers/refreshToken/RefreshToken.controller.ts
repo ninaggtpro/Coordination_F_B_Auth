@@ -1,7 +1,7 @@
 import { Controller, HttpCode, Param, Post } from "@nestjs/common";
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { RefreshAccountUseCase } from "src/application/use-cases/RefreshAccount/RefreshAccountUseCase";
-import { RefreshTokenResponse } from "../dto/refreshToken.reponse";
+import { RefreshTokenResponse } from "./refreshToken.reponse";
 
 @ApiTags('refresh-token')
 @Controller('refresh-token')

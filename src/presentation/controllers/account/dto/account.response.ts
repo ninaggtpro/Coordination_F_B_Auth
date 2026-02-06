@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { AccountEntity, AccountRole, AccountStatus } from '../../../domain/entities/account.entity';
+import { AccountEntity, AccountRole, AccountStatus } from 'src/domain/entities/account.entity';
 
 export class AccountResponse {
   @ApiProperty({
