@@ -4,7 +4,7 @@ import { LoginAccountUseCase } from '../../application/use-cases/LoginAccount/Lo
 import { LoginRequest } from './dto/login.request';
 import { LoginResponse } from './dto/login.response';
 
-@ApiTags('auth')
+@ApiTags('Access token')
 @Controller('token')
 export class AuthController {
     constructor(private readonly loginAccountUseCase: LoginAccountUseCase) { }
