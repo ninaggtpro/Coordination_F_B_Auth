@@ -127,9 +127,11 @@ export class AccountsController {
   })
   async getAllAccounts(): Promise<AccountResponse[]> {
     const accounts = await this.createAccountUseCase.findAll();
+
     if (!accounts || accounts.length === 0) {
       throw new NotFoundException(`Aucun compte trouvé`);
     }
+
     return accounts.map((account) => new AccountResponse(account));
   }
 }
