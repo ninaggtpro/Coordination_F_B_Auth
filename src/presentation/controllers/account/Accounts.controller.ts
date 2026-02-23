@@ -110,7 +110,7 @@ export class AccountsController {
     return new AccountResponse(response);
   }
 
-  @Get()
+  @Get('/all')
   @HttpCode(200)
   @ApiOperation({
     summary: 'Récupération de tous les comptes',
