@@ -18,12 +18,12 @@ export class LoginRequest {
   @IsNotEmpty()
   password: string;
 
-  @ApiProperty({ 
-    example: 'web', 
-    description: 'Provenance de la requête (ex: web, mobile)',
-    required: false
-  })
-  @IsString()
-  @IsOptional()
-  from?: string;
+  // @ApiProperty({ 
+  //   example: 'web', 
+  //   description: 'Provenance de la requête (ex: web, mobile)',
+  //   required: false
+  // })
+  // @IsString()
+  // @IsOptional()
+  // from?: string;
 }
