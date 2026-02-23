@@ -27,7 +27,7 @@ services:
       - private-net-auth
       - reseau-web
 networks:
-  private-net:
+  private-net-auth:
     driver: bridge
   reseau-web:
     external: true
