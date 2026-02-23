@@ -18,7 +18,7 @@ services:
     # On laisse le Dockerfile gérer la commande de démarrage (migrations + start)
     restart: always
     environment:
-      - DATABASE_URL=postgres://admin:ninaAdmin@localhost:5432/authService-db
+      - DATABASE_URL="postgres://admin:ninaAdmin@postgres:5432/authService-db"
     ports:
       - '3002:3002'
     depends_on:
