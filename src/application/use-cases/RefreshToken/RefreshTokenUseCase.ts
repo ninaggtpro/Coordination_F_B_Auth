@@ -5,7 +5,7 @@ import { ConflictException } from "@nestjs/common";
 import { JwtService } from '@nestjs/jwt';
 
 
-export class RefreshAccountUseCase {
+export class RefreshTokenUseCase {
     constructor(
         private readonly accountRepository: IAccountRepository,
         private readonly tokenService: TokenService,

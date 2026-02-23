@@ -9,7 +9,7 @@ import { LoginAccountValidator } from 'src/application/use-cases/LoginAccount/Lo
 import { JwtModule } from '@nestjs/jwt';
 import { RefreshTokenController } from '../refreshToken/RefreshToken.controller';
 import { ValidTokenController } from '../validToken/ValidToken.controller';
-import { RefreshAccountUseCase } from 'src/application/use-cases/RefreshAccount/RefreshAccountUseCase';
+import { RefreshTokenUseCase } from 'src/application/use-cases/RefreshToken/RefreshTokenUseCase';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
@@ -31,7 +31,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     LoginAccountValidator,
     TokenService,
     AuthService,
-    RefreshAccountUseCase,
+    RefreshTokenUseCase,
   ],
 })
 export class AuthModule {}

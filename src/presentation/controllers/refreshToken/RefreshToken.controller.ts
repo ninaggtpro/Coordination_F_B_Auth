@@ -1,13 +1,13 @@
 import { Controller, HttpCode, Param, Post } from "@nestjs/common";
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
-import { RefreshAccountUseCase } from "src/application/use-cases/RefreshAccount/RefreshAccountUseCase";
-import { RefreshTokenResponse } from "./refreshToken.reponse";
+import { RefreshTokenUseCase } from "src/application/use-cases/RefreshToken/RefreshTokenUseCase";
+import { RefreshTokenResponse } from "./dto/refreshToken.reponse";
 
 @ApiTags('refresh-token')
 @Controller('refresh-token')
 export class RefreshTokenController {
     constructor(
-        private readonly refreshTokenService: RefreshAccountUseCase,
+        private readonly refreshTokenService: RefreshTokenUseCase,
     ) { }
 
     @Post(':refreshToken/token')
