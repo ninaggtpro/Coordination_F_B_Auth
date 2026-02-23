@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { AccountEntity } from '../entities/account.entity';
 
@@ -27,13 +27,24 @@ export class TokenService {
   
   return this.jwtService.sign(payload, { 
     expiresIn: '120m', 
-    secret: process.env.JWT_REFRESH_SECRET, 
+    secret: process.env.JWT_REFRESH_SECRET || 'fallback_refresh_secret', 
   });
 }
-
   verifyToken(token: string, isRefresh = false): any {
-    return this.jwtService.verify(token, {
-      secret: isRefresh ? process.env.JWT_REFRESH_SECRET : undefined
-    });
-  }
+  try {
+      const payload = this.jwtService.verify(token, {
+        secret: isRefresh 
+          ? (process.env.JWT_REFRESH_SECRET || 'fallback_refresh_secret') 
+          : undefined
+      });
+
+      if (isRefresh && payload.type !== 'refresh') {
+        throw new UnauthorizedException('This is not a refresh token');
+      }
+      
+      return payload;
+    } catch (error) {
+      throw new UnauthorizedException('Invalid or expired token');
+    }
+}
 }
