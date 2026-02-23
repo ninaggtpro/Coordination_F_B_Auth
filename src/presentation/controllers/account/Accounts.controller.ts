@@ -80,30 +80,6 @@ export class AccountsController {
     return new AccountResponse(account);
   }
 
-  @Get()
-  @HttpCode(200)
-  @ApiOperation({
-    summary: 'Récupération de tous les comptes',
-    description: 'Retourne la liste de tous les comptes enregistrés.',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Liste des comptes récupérée avec succès',
-    type: [AccountResponse],
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Aucun compte trouvé',
-  })
-  async getAllAccounts(): Promise<AccountResponse[]> {
-    const accounts = await this.createAccountUseCase.findAll();
-
-    if (!accounts || accounts.length === 0) {
-      throw new NotFoundException(`Aucun compte trouvé`);
-    }
-
-    return accounts.map((account) => new AccountResponse(account));
-  }
   @Get('/:id')
   @HttpCode(200)
   @ApiOperation({
@@ -132,5 +108,30 @@ export class AccountsController {
       throw new NotFoundException(`Compte avec l'id ${id} non trouvé`);
     }
     return new AccountResponse(response);
+  }
+
+  @Get('all')
+  @HttpCode(200)
+  @ApiOperation({
+    summary: 'Récupération de tous les comptes',
+    description: 'Retourne la liste de tous les comptes enregistrés.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Liste des comptes récupérée avec succès',
+    type: [AccountResponse],
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Aucun compte trouvé',
+  })
+  async getAllAccounts(): Promise<AccountResponse[]> {
+    const accounts = await this.createAccountUseCase.findAll();
+
+    if (!accounts || accounts.length === 0) {
+      throw new NotFoundException(`Aucun compte trouvé`);
+    }
+
+    return accounts.map((account) => new AccountResponse(account));
   }
 }
