@@ -39,9 +39,13 @@ export class LoginAccountUseCase {
         }
 
         const accessToken = this.tokenService.generateAccessToken(account!);
-        const accessTokenExpiresAt = new Date(Date.now() + this.jwtService.decode(accessToken).exp * 1000);
         const refreshToken = this.tokenService.generateRefreshToken(account!);
-        const refreshTokenExpiresAt = new Date(Date.now() + this.jwtService.decode(refreshToken).exp * 1000);
+
+        const decodedAccess = this.jwtService.decode(accessToken) as any;
+        const decodedRefresh = this.jwtService.decode(refreshToken) as any;
+
+        const accessTokenExpiresAt = new Date(decodedAccess.exp * 1000);
+        const refreshTokenExpiresAt = new Date(decodedRefresh.exp * 1000);
 
         return {
             accessToken,
