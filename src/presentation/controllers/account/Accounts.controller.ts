@@ -5,13 +5,13 @@ import { CreateAccountRequest } from './dto/create-account.request';
 import { AccountResponse } from './dto/account.response';
 
 @ApiTags('Account')
-@Controller()
+@Controller('account')
 export class AccountsController {
   constructor(
     private readonly createAccountUseCase: CreateAccountUseCase,
   ) { }
 
-  @Post('account')
+  @Post()
   @HttpCode(201)
   @ApiOperation({ 
     summary: "Création d'un compte utilisateur",
@@ -63,7 +63,7 @@ export class AccountsController {
     return new AccountResponse(account);
   }
 
-  @Get("account/:id")
+  @Get("/:id")
   @HttpCode(200)
   @ApiOperation({
     summary: "Récupération d'un compte par son ID",
@@ -92,7 +92,7 @@ export class AccountsController {
     return new AccountResponse(response);
 }
 
-  @Get("accounts")
+  @Get('all')
   @HttpCode(200)
   @ApiOperation({
     summary: "Récupération de tous les comptes",
