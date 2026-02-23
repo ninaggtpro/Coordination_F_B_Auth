@@ -11,7 +11,7 @@ services:
     volumes:
       - postgres:/var/lib/postgresql/data
     networks:
-      - private-net
+      - private-net-auth
   api:
     build: .
     container_name: auth_api
@@ -24,7 +24,7 @@ services:
     depends_on:
       - postgres
     networks:
-      - private-net
+      - private-net-auth
       - reseau-web
 networks:
   private-net:
