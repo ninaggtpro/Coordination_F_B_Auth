@@ -20,6 +20,7 @@ services:
     restart: always
     environment:
       DATABASE_URL: postgresql://admin:ninaAdmin@postgres:5432/auth_service_db
+      JWT_SECRET: ${JWT_SECRET}
     ports:
       - '3002:3002'
     depends_on:
