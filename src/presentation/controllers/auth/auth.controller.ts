@@ -44,7 +44,7 @@ export class AuthController {
     @Headers('user-agent') userAgent: any,
     @Ip() ip: string,
   ): Promise<LoginResponse> {
-    const fromValue = loginRequest.from || userAgent || 'unknown';
+    const fromValue = userAgent || 'unknown';
 
     const tokens = await this.loginAccountUseCase.execute({
       email: loginRequest.login,
