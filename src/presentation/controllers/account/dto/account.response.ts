@@ -12,7 +12,7 @@ export class AccountResponse {
     example: 'user@example.com',
     description: 'Identifiant de connexion (mappé depuis l\'email interne)'
   })
-  login: string;
+  email: string;
 
   @ApiProperty({
     type: [String],
@@ -47,7 +47,7 @@ export class AccountResponse {
   constructor(account: AccountEntity) {
   if (account) {
     this.uid = account.uid;
-    this.login = account.email;
+    this.email = account.email;
     this.roles = account.roles;
     this.status = account.status;
     this.createdAt = account.createdAt.toISOString();

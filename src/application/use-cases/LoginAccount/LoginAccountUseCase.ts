@@ -35,7 +35,7 @@ export class LoginAccountUseCase {
         );
 
         if (!isPasswordValid) {
-            throw new NotFoundException('Identifiants non trouvé (paire login / mot de passe inconnue)');
+            throw new NotFoundException('Identifiants non trouvé (paire email / mot de passe inconnue)');
         }
 
         const accessToken = this.tokenService.generateAccessToken(account!);
