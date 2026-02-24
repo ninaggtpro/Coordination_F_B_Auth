@@ -8,7 +8,7 @@ export class LoginRequest {
   })
   @IsEmail()
   @IsNotEmpty()
-  login: string;
+  email: string;
 
   @ApiProperty({ 
     example: 'password123',
@@ -18,12 +18,4 @@ export class LoginRequest {
   @IsNotEmpty()
   password: string;
 
-  // @ApiProperty({ 
-  //   example: 'web', 
-  //   description: 'Provenance de la requête (ex: web, mobile)',
-  //   required: false
-  // })
-  // @IsString()
-  // @IsOptional()
-  // from?: string;
 }
