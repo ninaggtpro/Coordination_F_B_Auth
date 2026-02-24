@@ -37,7 +37,7 @@ export class AuthController {
   @ApiResponse({
     status: 404,
     description:
-      'Identifiants non trouvé (paire login / mot de passe inconnue)',
+      'Identifiants non trouvé (paire email / mot de passe inconnue)',
   })
   async login(
     @Body() loginRequest: LoginRequest,
@@ -47,7 +47,7 @@ export class AuthController {
     const fromValue = userAgent || 'unknown';
 
     const tokens = await this.loginAccountUseCase.execute({
-      email: loginRequest.login,
+      email: loginRequest.email,
       password: loginRequest.password,
       from: fromValue,
       ip: ip,
@@ -55,7 +55,7 @@ export class AuthController {
 
     if (!tokens) {
       throw new NotFoundException(
-        'Identifiants non trouvé (paire login / mot de passe inconnue)',
+        'Identifiants non trouvé (paire email / mot de passe inconnue)',
       );
     }
 
