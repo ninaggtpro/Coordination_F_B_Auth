@@ -52,7 +52,7 @@ export class AccountsController {
   })
   async create(@Body() request: CreateAccountRequest): Promise<AccountResponse> {
     const account = await this.createAccountUseCase.execute({
-      email: request.login,
+      email: request.email,
       password: request.password,
       roles: request.roles,
       status: request.status,

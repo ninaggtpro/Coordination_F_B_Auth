@@ -9,7 +9,7 @@ export class CreateAccountRequest {
   })
   @IsEmail()
   @IsNotEmpty()
-  login: string;
+  email: string;
 
   @ApiProperty({ 
     example: 'string', 
@@ -24,7 +24,7 @@ export class CreateAccountRequest {
     type: [String],
     enum: AccountRole, 
     isArray: true, 
-    example: ['string'],
+    example: ['ROLE_USER'],
     description: 'Liste des rôles (ROLE_ADMIN ou ROLE_USER)'
   })
   @IsArray()
