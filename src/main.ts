@@ -10,6 +10,17 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
 
   app.setGlobalPrefix('api');
+  // ── CORS ──────────────────────────────────────────────────────────────────
+  const rawOrigins = process.env.CORS_ORIGIN ?? '*';
+  const origins =
+    rawOrigins === '*' ? '*' : rawOrigins.split(',').map((o) => o.trim());
+
+  app.enableCors({
+    origin: origins,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: origins !== '*',
+  });
 
   const config = new DocumentBuilder()
     .setTitle('Auth Service API')
@@ -17,7 +28,7 @@ async function bootstrap() {
     .setVersion('1.0')
     .build();
 
-  const document = SwaggerModule.createDocument(app, config,);
+  const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
   const port = configService.get<number>('PORT') || 3000;
