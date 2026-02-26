@@ -26,8 +26,8 @@ export class CreateAccountUseCase {
     const account = AccountEntity.create({
       email: dto.email,
       password: hashedPassword,
-      firstName: '',
-      lastName: '',
+      firstName: dto.firstName ?? '',
+      lastName: dto.lastName ?? '',
       roles: dto.roles,
       status: dto.status,
     });

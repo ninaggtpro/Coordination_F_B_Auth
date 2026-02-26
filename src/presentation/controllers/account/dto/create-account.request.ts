@@ -21,6 +21,24 @@ export class CreateAccountRequest {
   password: string;
 
   @ApiProperty({ 
+    example: 'Nina',
+    description: 'Prénom de l’utilisateur',
+    required: false 
+  })
+  @IsString()
+  @IsOptional()
+  firstName: string;
+
+  @ApiProperty({ 
+    example: 'Guiguet',
+    description: 'Nom de l’utilisateur',
+    required: false
+  })
+  @IsString()
+  @IsOptional()
+  lastName: string;
+
+  @ApiProperty({ 
     type: [String],
     enum: AccountRole, 
     isArray: true, 

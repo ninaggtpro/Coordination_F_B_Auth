@@ -71,6 +71,8 @@ export class AccountsController {
     const account = await this.createAccountUseCase.execute({
       email: request.email,
       password: request.password,
+      firstName: request.firstName,
+      lastName: request.lastName,
       roles: request.roles,
       status: request.status,
     });
