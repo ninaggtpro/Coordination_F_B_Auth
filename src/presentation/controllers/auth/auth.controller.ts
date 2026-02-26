@@ -8,6 +8,7 @@ import {
   NotFoundException,
   UseGuards,
 } from '@nestjs/common';
+import { Public } from '../../guards/public.decorator';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger'; // Ajout de ApiExcludeParam
 import { LoginRequest } from './dto/login.request';
 import { LoginResponse } from './dto/login.response';
@@ -18,6 +19,7 @@ import { LoginAccountUseCase } from 'src/application/use-cases/LoginAccount/Logi
 export class AuthController {
   constructor(private readonly loginAccountUseCase: LoginAccountUseCase) {}
 
+  @Public()
   @Post()
   @HttpCode(201)
   @ApiOperation({
@@ -61,5 +63,4 @@ export class AuthController {
 
     return new LoginResponse(tokens);
   }
-
 }

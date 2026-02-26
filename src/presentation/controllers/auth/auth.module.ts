@@ -14,7 +14,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
-    PrismaModule, 
+    PrismaModule,
     RepositoriesModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
@@ -33,5 +33,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     AuthService,
     RefreshTokenUseCase,
   ],
+  exports: [TokenService, JwtModule],
 })
 export class AuthModule {}

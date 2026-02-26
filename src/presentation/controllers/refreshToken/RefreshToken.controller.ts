@@ -1,48 +1,50 @@
-import { Controller, HttpCode, Param, Post } from "@nestjs/common";
-import { ApiOperation, ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
-import { RefreshTokenUseCase } from "src/application/use-cases/RefreshToken/RefreshTokenUseCase";
-import { RefreshTokenResponse } from "./dto/refreshToken.reponse";
+import { Controller, HttpCode, Param, Post } from '@nestjs/common';
+import { Public } from '../../guards/public.decorator';
+import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { RefreshTokenUseCase } from 'src/application/use-cases/RefreshToken/RefreshTokenUseCase';
+import { RefreshTokenResponse } from './dto/refreshToken.reponse';
 
 @ApiTags('refresh-token')
 @Controller('refresh-token')
 export class RefreshTokenController {
-    constructor(
-        private readonly refreshTokenService: RefreshTokenUseCase,
-    ) { }
+  constructor(private readonly refreshTokenService: RefreshTokenUseCase) {}
 
-    @Post(':refreshToken/token')
-    @HttpCode(201)
-    @ApiOperation({ 
-        summary: "Création d'un access token à partir d'un refresh token.",
-        description: "Permet la génération d'un nouvel access token sans avoir à s'authentifier de nouveau..." 
-    })
-    @ApiParam({ 
-        name: 'refreshToken', 
-        description: 'Refresh token à consommer',
-        required: true 
-    })
-    @ApiResponse({
-        status: 201,
-        description: "Création avec succès des nouveaux tokens",
-        type: RefreshTokenResponse,
-    })
-    @ApiResponse({
-        status: 404,
-        description: "Token invalide ou inexistant",
-    })
-     
-    async create(@Param('refreshToken') refreshToken: string): Promise<RefreshTokenResponse> {
-        const newTokens = await this.refreshTokenService.execute(refreshToken);
+  @Public()
+  @Post(':refreshToken/token')
+  @HttpCode(201)
+  @ApiOperation({
+    summary: "Création d'un access token à partir d'un refresh token.",
+    description:
+      "Permet la génération d'un nouvel access token sans avoir à s'authentifier de nouveau...",
+  })
+  @ApiParam({
+    name: 'refreshToken',
+    description: 'Refresh token à consommer',
+    required: true,
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Création avec succès des nouveaux tokens',
+    type: RefreshTokenResponse,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Token invalide ou inexistant',
+  })
+  async create(
+    @Param('refreshToken') refreshToken: string,
+  ): Promise<RefreshTokenResponse> {
+    const newTokens = await this.refreshTokenService.execute(refreshToken);
 
-        if (!newTokens) {
-            throw new Error("Invalid refresh token"); 
-        }
-
-        return new RefreshTokenResponse(
-            newTokens.accessToken,
-            newTokens.accessTokenExpiresAt,
-            newTokens.refreshToken,
-            newTokens.refreshTokenExpiresAt
-        );
+    if (!newTokens) {
+      throw new Error('Invalid refresh token');
     }
+
+    return new RefreshTokenResponse(
+      newTokens.accessToken,
+      newTokens.accessTokenExpiresAt,
+      newTokens.refreshToken,
+      newTokens.refreshTokenExpiresAt,
+    );
+  }
 }

@@ -3,7 +3,6 @@ import {
   Post,
   Body,
   HttpCode,
-  UseGuards,
   Get,
   Param,
   NotFoundException,
@@ -18,12 +17,14 @@ import {
 } from '@nestjs/swagger';
 import { CreateAccountRequest } from './dto/create-account.request';
 import { AccountResponse } from './dto/account.response';
+import { Public } from '../../guards/public.decorator';
 
 @ApiTags('Account')
 @Controller('account')
 export class AccountsController {
   constructor(private readonly createAccountUseCase: CreateAccountUseCase) {}
 
+  @Public()
   @Post()
   @HttpCode(201)
   @ApiOperation({
