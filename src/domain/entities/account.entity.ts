@@ -33,6 +33,10 @@ export class AccountEntity {
     return email;
   }
 
+  private static sanitizeName(name: string | undefined | null): string {
+    return name ? name.trim() : '';
+  }
+
   private static applyRoleLogic(roles?: AccountRole[]): AccountRole[] {
     if (!roles || roles.length === 0) {
       return [AccountRole.USER];
@@ -122,8 +126,8 @@ export class AccountEntity {
   static create(props: {
     email: string;
     password: string;
-    firstName: string;
-    lastName: string;
+    firstName?: string;
+    lastName?: string;
     roles?: AccountRole[];
     status?: AccountStatus;
   }): AccountEntity {
@@ -131,8 +135,8 @@ export class AccountEntity {
       randomUUID(),
       this.validateEmail(props.email),
       this.validatePassword(props.password),
-      props.firstName,
-      props.lastName,
+      this.sanitizeName(props.firstName),
+      this.sanitizeName(props.lastName),
       this.applyRoleLogic(props.roles),
       this.validateStatus(props.status),
       new Date(),
