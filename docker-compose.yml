@@ -26,6 +26,7 @@ services:
       - '5050:80'
     networks:
       - private-net-auth
+      - reseau-web
     depends_on:
       - postgres
   api:
