@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -41,6 +41,10 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(ProxyMiddleware)
-      .forRoutes('booking*path', 'movie*path', 'cinema*path');
+      .forRoutes(
+        { path: '/booking/(.*)', method: RequestMethod.ALL },
+        { path: '/movie/(.*)', method: RequestMethod.ALL },
+        { path: '/cinema/(.*)', method: RequestMethod.ALL },
+      );
   }
 }

@@ -1,6 +1,6 @@
 # docker-compose.yml
 
-version: '3.8'
+version: "3.8"
 services:
   postgres:
     image: postgres:17
@@ -8,31 +8,10 @@ services:
     environment:
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=ninaAdmin
-      - POSTGRES_DB=auth_service_db
     volumes:
       - postgres:/var/lib/postgresql/data
-    networks:
-      - private-net-auth
-  api:
-    build: .
-    container_name: auth_api
-    # On laisse le Dockerfile gérer la commande de démarrage (migrations + start)
-    restart: always
-    environment:
-      DATABASE_URL: postgresql://admin:ninaAdmin@postgres:5432/auth_service_db
-      JWT_SECRET: ${JWT_SECRET}
     ports:
-      - '3002:3002'
-    depends_on:
-      - postgres
-    networks:
-      - private-net-auth
-      - reseau-web
-networks:
-  private-net-auth:
-    driver: bridge
-  reseau-web:
-    external: true
+      - "5432:5432"
 
 volumes:
   postgres:
