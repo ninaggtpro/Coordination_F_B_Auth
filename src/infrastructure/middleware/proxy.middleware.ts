@@ -37,12 +37,9 @@ export class ProxyMiddleware implements NestMiddleware {
             },
             on: {
               proxyReq: (proxyReq, req: any) => {
-                // ======= 🎯 AJOUT POUR LES LOGS =======
                 console.log(`\n[PROXY] ${req.method} ${req.originalUrl}`);
                 console.log(`[PROXY] -> Cible : ${target}${proxyReq.path}`);
-                // =====================================
 
-                // Transmettre les headers enrichis si l'Auth a réussi
                 if (req['user_id']) {
                   proxyReq.setHeader('x-user-id', req['user_id']);
                 }

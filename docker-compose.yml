@@ -37,6 +37,9 @@ services:
     environment:
       DATABASE_URL: postgresql://admin:ninaAdmin@postgres:5432/auth_service_db
       JWT_SECRET: ${JWT_SECRET}
+      MOVIE_SERVICE_URL: ${MOVIE_SERVICE_URL}
+      BOOKING_SERVICE_URL: ${BOOKING_SERVICE_URL}
+      CINEMA_SERVICE_URL: ${CINEMA_SERVICE_URL}
     ports:
       - '3002:3002'
     depends_on:
