@@ -107,7 +107,7 @@ export class AccountsController {
 
     return accounts.map((account) => new AccountResponse(account));
   }
-
+  @Public()
   @Get('/:id')
   @HttpCode(200)
   @ApiOperation({
