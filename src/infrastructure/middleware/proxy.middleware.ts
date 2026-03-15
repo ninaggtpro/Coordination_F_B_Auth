@@ -1,6 +1,6 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { createProxyMiddleware, RequestHandler } from 'http-proxy-middleware';
+import { createProxyMiddleware, fixRequestBody, RequestHandler } from 'http-proxy-middleware';
 import { Request, Response, NextFunction } from 'express';
 import { TokenService } from '../../domain/services/token.service';
 import { log } from 'console';
@@ -36,7 +36,7 @@ export class ProxyMiddleware implements NestMiddleware {
               [`^${service.path}`]: '',
             },
             on: {
-              proxyReq: (proxyReq, req: any) => {
+              proxyReq: (proxyReq: any, req: any) => {
                 console.log(`\n[PROXY] ${req.method} ${req.originalUrl}`);
                 console.log(`[PROXY] -> Cible : ${target}${proxyReq.path}`);
 
@@ -45,6 +45,11 @@ export class ProxyMiddleware implements NestMiddleware {
                 }
                 if (req['user_roles']) {
                   proxyReq.setHeader('x-user-roles', req['user_roles']);
+                }
+                
+                // Fix body parsing issue
+                if (req.body && Object.keys(req.body).length > 0) {
+                  fixRequestBody(proxyReq, req);
                 }
               },
             },
