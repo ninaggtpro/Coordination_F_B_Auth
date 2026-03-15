@@ -26,11 +26,13 @@ export class ProxyMiddleware implements NestMiddleware {
     services.forEach((service) => {
       const target = this.configService.get<string>(service.envKey);
       if (target) {
+        console.log(`[PROXY CONFIG] Configured ${service.path} to target: ${target}`);
         this.proxies.set(
           service.path,
           createProxyMiddleware({
             target,
             changeOrigin: true,
+            secure: false, // Bypass invalid SSL configs
             logger: console,
             pathRewrite: {
               [`^${service.path}`]: '',
@@ -52,9 +54,17 @@ export class ProxyMiddleware implements NestMiddleware {
                   fixRequestBody(proxyReq, req);
                 }
               },
+              proxyRes: (proxyRes, req, res) => {
+                console.log(`[PROXY RES] ${req.method} ${req.url} -> Status: ${proxyRes.statusCode}`);
+              },
+              error: (err, req, res) => {
+                console.error(`[PROXY ERROR] Error for ${req.method} ${req.url}:`, err.message);
+              }
             },
           }),
         );
+      } else {
+        console.warn(`[PROXY CONFIG] Missing env value for ${service.envKey}`);
       }
     });
   }
